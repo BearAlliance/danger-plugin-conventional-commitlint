@@ -1,7 +1,10 @@
 import rules from '@commitlint/config-conventional';
+import lint from '@commitlint/lint';
 import commitlint from './index';
 
 declare const global: any;
+
+// jest.mock('@commitlint/lint', () => jest.fn());
 
 describe('commitlint', () => {
   beforeEach(() => {
@@ -9,7 +12,6 @@ describe('commitlint', () => {
     global.message = jest.fn();
     global.fail = jest.fn();
     global.markdown = jest.fn();
-    global.lint = jest.fn();
   });
 
   afterEach(() => {
@@ -18,7 +20,6 @@ describe('commitlint', () => {
     global.fail = undefined;
     global.markdown = undefined;
     global.danger = undefined;
-    global.lint = undefined;
   });
 
   describe('single message', () => {
@@ -27,9 +28,7 @@ describe('commitlint', () => {
     });
     describe('when the commit message is good', () => {
       beforeEach(() => {
-        global.lint.mockImplementationOnce(() =>
-          Promise.resolve({ valid: true })
-        );
+        lint.mockImplementationOnce(() => Promise.resolve({ valid: true }));
       });
       it('should do nothing', async () => {
         await commitlint(rules);
@@ -39,7 +38,7 @@ describe('commitlint', () => {
 
     describe('when the commit message is bad', () => {
       beforeEach(() => {
-        global.lint.mockImplementationOnce(() =>
+        lint.mockImplementationOnce(() =>
           Promise.resolve({ valid: false, errors: [{ message: 'really bad' }] })
         );
       });
@@ -72,7 +71,7 @@ describe('commitlint', () => {
     });
     describe('when the commit message is good', () => {
       beforeEach(() => {
-        global.lint.mockImplementation(() => Promise.resolve({ valid: true }));
+        lint.mockImplementation(() => Promise.resolve({ valid: true }));
       });
       it('should do nothing', async () => {
         await commitlint(rules);
@@ -82,7 +81,7 @@ describe('commitlint', () => {
 
     describe('when the commit message is bad', () => {
       beforeEach(() => {
-        global.lint.mockImplementation(() =>
+        lint.mockImplementation(() =>
           Promise.resolve({ valid: false, errors: [{ message: 'really bad' }] })
         );
       });

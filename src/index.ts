@@ -1,6 +1,6 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
+import lint from '@commitlint/lint';
 import { DangerDSLType } from '../node_modules/danger/distribution/dsl/DangerDSL';
-declare var lint: any;
 declare var danger: DangerDSLType;
 export declare function message(message: string): void;
 export declare function warn(message: string): void;
