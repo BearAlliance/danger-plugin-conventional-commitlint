@@ -1,0 +1,94 @@
+{
+  "name": "danger-plugin-commitlint",
+  "description": "lint commit messages with danger and commitlint",
+  "author": {
+    "name": "Nick Cacace",
+    "email": "NickCacace@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bearalliance/danger-plugin-commitlint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bearalliance/danger-plugin-commitlint/issues"
+  },
+  "homepage": "https://github.com/bearalliance/danger-plugin-commitlint#readme",
+  "keywords": [
+    "danger",
+    "danger-plugin",
+    "commitlint",
+    "lint",
+    "conventional"
+  ],
+  "version": "0.0.0-development",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "precommit": "lint-staged",
+    "commit": "git-cz",
+    "commitmsg": "validate-commit-msg",
+    "build": "tsc",
+    "test": "jest",
+    "predocs": "rm -rf docs/",
+    "docs": "esdoc -c .esdoc.json",
+    "prepublish": "npm run build",
+    "prettier-project": "prettier --write 'src/**/*.{ts,tsx}'",
+    "lint": "tslint \"src/**/*.ts\""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "files": [
+    "./dist"
+  ],
+  "devDependencies": {
+    "@commitlint/config-conventional": "^8.2.0",
+    "@types/jest": "^24.0.21",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
+    "danger": "*",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.6.4",
+    "validate-commit-msg": "^2.14.0"
+  },
+  "optionalDependencies": {
+    "esdoc": "^1.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.@(ts|tsx)": [
+      "tslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(.test)\\.(ts|tsx)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ]
+  },
+  "dependencies": {
+    "@commitlint/lint": "^8.2.0"
+  }
+}
