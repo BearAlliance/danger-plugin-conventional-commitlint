@@ -1,10 +1,7 @@
-import rules from '@commitlint/config-conventional';
-import lint from '@commitlint/lint';
+import { rules } from '@commitlint/config-conventional';
 import commitlint from './index';
 
 declare const global: any;
-
-// jest.mock('@commitlint/lint', () => jest.fn());
 
 describe('commitlint', () => {
   beforeEach(() => {
@@ -23,12 +20,9 @@ describe('commitlint', () => {
   });
 
   describe('single message', () => {
-    beforeEach(() => {
-      global.danger = { git: { commits: [{ message: 'foo' }] } };
-    });
     describe('when the commit message is good', () => {
       beforeEach(() => {
-        lint.mockImplementationOnce(() => Promise.resolve({ valid: true }));
+        global.danger = { git: { commits: [{ message: 'chore: foo' }] } };
       });
       it('should do nothing', async () => {
         await commitlint(rules);
@@ -38,25 +32,24 @@ describe('commitlint', () => {
 
     describe('when the commit message is bad', () => {
       beforeEach(() => {
-        lint.mockImplementationOnce(() =>
-          Promise.resolve({ valid: false, errors: [{ message: 'really bad' }] })
-        );
+        global.danger = { git: { commits: [{ message: 'foo' }] } };
       });
       describe('with default config', () => {
         it('should generate a message and fail', async () => {
           await commitlint(rules);
           expect(global.fail).toHaveBeenCalledTimes(1);
           expect(global.fail).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- really bad'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
           );
         });
       });
       describe('with warn configured', () => {
         it('should generate a message and fail', async () => {
           await commitlint(rules, { severity: 'warn' });
+          expect(global.fail).toHaveBeenCalledTimes(0);
           expect(global.warn).toHaveBeenCalledTimes(1);
           expect(global.warn).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- really bad'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
           );
         });
       });
@@ -64,14 +57,13 @@ describe('commitlint', () => {
   });
 
   describe('multiple messages', () => {
-    beforeEach(() => {
-      global.danger = {
-        git: { commits: [{ message: 'foo' }, { message: 'bar' }] }
-      };
-    });
     describe('when the commit message is good', () => {
       beforeEach(() => {
-        lint.mockImplementation(() => Promise.resolve({ valid: true }));
+        global.danger = {
+          git: {
+            commits: [{ message: 'chore: foo' }, { message: 'feat: bar' }]
+          }
+        };
       });
       it('should do nothing', async () => {
         await commitlint(rules);
@@ -81,9 +73,9 @@ describe('commitlint', () => {
 
     describe('when the commit message is bad', () => {
       beforeEach(() => {
-        lint.mockImplementation(() =>
-          Promise.resolve({ valid: false, errors: [{ message: 'really bad' }] })
-        );
+        global.danger = {
+          git: { commits: [{ message: 'foo' }, { message: 'bar' }] }
+        };
       });
 
       describe('with default config', () => {
@@ -91,7 +83,10 @@ describe('commitlint', () => {
           await commitlint(rules);
           expect(global.fail).toHaveBeenCalledTimes(2);
           expect(global.fail).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- really bad'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
+          );
+          expect(global.fail).toHaveBeenCalledWith(
+            'There is a problem with the commit message\n> bar\n- subject may not be empty\n- type may not be empty'
           );
         });
       });
