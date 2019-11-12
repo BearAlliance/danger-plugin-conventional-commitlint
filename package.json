@@ -24,9 +24,7 @@
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "precommit": "lint-staged",
     "commit": "git-cz",
-    "commitmsg": "validate-commit-msg",
     "build": "tsc",
     "test": "jest",
     "prepublish": "npm run build",
@@ -41,6 +39,7 @@
     "./dist"
   ],
   "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@types/jest": "^24.0.21",
     "commitizen": "^4.0.3",
@@ -53,12 +52,17 @@
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.4",
-    "validate-commit-msg": "^2.14.0"
+    "typescript": "^3.6.4"
   },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
