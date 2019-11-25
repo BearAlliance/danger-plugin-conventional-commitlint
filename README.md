@@ -20,26 +20,30 @@ At a glance:
 ```js
 // dangerfile.js
 import commitlint from 'danger-plugin-conventional-commitlint'
-import rules from '@commitlint/config-conventional';
+import configConventional from '@commitlint/config-conventional';
 
 (async function dangerReport() {
-  await commitlint(rules);
+
+  const commitlintConfig = {
+    severity: 'warn'
+  };
+  await commitlint(configConventional.rules, commitlintConfig);
 })();
 ```
 > Note: you must provide your own `rules` to the function 
 
 
-### Configuration
+## API
 
-|Rule | Default | Options| Description |
-| ---|---|---|---|
-|`severity`|`'fail'`|`['fail', 'warn', 'message']`| danger method to call when the commit message does not pass the linter
-Example config object:
-```js
-{
-  severity: 'warn'
-}
-```
+commitlint([rules], [options])
+
+### Options
+
+#### severity
+
+Type: `String`<br>
+Choices: `'fail' | 'warn' | 'message'`<br>
+danger method to call when the commit message does not pass the linter
 
 ## Changelog
 
