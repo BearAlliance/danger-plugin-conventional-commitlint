@@ -27,7 +27,7 @@
     "commit": "git-cz",
     "build": "rimraf dist/ && tsc",
     "test": "jest",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "prettier-project": "prettier --write 'src/**/*.{ts,tsx}'",
     "lint": "tslint \"src/**/*.ts\""
   },
