@@ -25,7 +25,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "commit": "git-cz",
-    "build": "tsc",
+    "build": "rimraf dist/ && tsc",
     "test": "jest",
     "prepublish": "npm run build",
     "prettier-project": "prettier --write 'src/**/*.{ts,tsx}'",
@@ -36,7 +36,7 @@
     "node": ">=4.0.0"
   },
   "files": [
-    "./dist"
+    "dist"
   ],
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
@@ -49,6 +49,7 @@
     "jest": "^24.9.0",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.2",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
