@@ -47,7 +47,7 @@
     "danger": "*",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
-    "lint-staged": "^9.4.2",
+    "lint-staged": "^10.2.7",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^24.1.0",
@@ -69,8 +69,7 @@
   "lint-staged": {
     "*.@(ts|tsx)": [
       "tslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "jest": {
