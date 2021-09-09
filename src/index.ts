@@ -1,5 +1,5 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
-import * as lint from '@commitlint/lint';
+import lint from '@commitlint/lint';
 import { DangerDSLType } from '../node_modules/danger/distribution/dsl/DangerDSL';
 declare const danger: DangerDSLType;
 export declare function message(message: string): void;
