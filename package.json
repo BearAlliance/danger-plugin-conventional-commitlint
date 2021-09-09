@@ -26,7 +26,7 @@
   "scripts": {
     "commit": "git-cz",
     "build": "rimraf dist/ && tsc",
-    "test": "npm run lint && npm run test:unit",
+    "test": "npm run prettier:check && npm run lint && npm run test:unit",
     "test:unit": "jest",
     "prepublishOnly": "npm run build",
     "prettier:check": "prettier --check .",
