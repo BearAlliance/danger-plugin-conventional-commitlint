@@ -42,8 +42,8 @@
     "dist/"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
@@ -88,6 +88,6 @@
     ]
   },
   "dependencies": {
-    "@commitlint/lint": "^8.2.0"
+    "@commitlint/lint": "^13.1.0"
   }
 }
