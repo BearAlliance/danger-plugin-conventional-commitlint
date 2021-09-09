@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run build",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "lint": "tslint \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\"",
     "prepare": "husky install"
   },
   "license": "MIT",
@@ -45,17 +45,18 @@
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
     "commitizen": "4.2",
     "cz-conventional-changelog": "3.3",
     "danger": "*",
+    "eslint": "^7.32.0",
     "husky": "^7.0.2",
     "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.4.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.5",
-    "tslint": "^5.20.0",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.4"
   },
   "config": {
@@ -65,7 +66,7 @@
   },
   "lint-staged": {
     "*.@(ts|tsx)": [
-      "tslint --fix"
+      "npm run lint -- --fix"
     ],
     "*.@(ts|tsx|js|jsx|json|md|yml)": [
       "prettier --write"
