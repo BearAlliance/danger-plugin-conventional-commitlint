@@ -29,8 +29,8 @@
     "test": "npm run prettier:check && npm run lint && npm run test:unit",
     "test:unit": "jest",
     "prepublishOnly": "npm run build",
-    "prettier:check": "prettier --check .",
-    "prettier:write": "prettier --write .",
+    "prettier:check": "prettier --check --ignore-path .gitignore .",
+    "prettier:write": "prettier --write --ignore-path .gitignore .",
     "lint": "eslint \"src/**/*.ts\"",
     "prepare": "husky install"
   },
