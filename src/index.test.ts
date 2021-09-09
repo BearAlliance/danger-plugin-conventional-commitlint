@@ -61,8 +61,8 @@ describe('commitlint', () => {
       beforeEach(() => {
         global.danger = {
           git: {
-            commits: [{ message: 'chore: foo' }, { message: 'feat: bar' }]
-          }
+            commits: [{ message: 'chore: foo' }, { message: 'feat: bar' }],
+          },
         };
       });
       it('should do nothing', async () => {
@@ -74,7 +74,7 @@ describe('commitlint', () => {
     describe('when the commit message is bad', () => {
       beforeEach(() => {
         global.danger = {
-          git: { commits: [{ message: 'foo' }, { message: 'bar' }] }
+          git: { commits: [{ message: 'foo' }, { message: 'bar' }] },
         };
       });
 
