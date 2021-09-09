@@ -26,7 +26,8 @@
   "scripts": {
     "commit": "git-cz",
     "build": "rimraf dist/ && tsc",
-    "test": "jest",
+    "test": "npm run lint && npm run test:unit",
+    "test:unit": "jest",
     "prepublishOnly": "npm run build",
     "prettier-project": "prettier --write 'src/**/*.{ts,tsx}'",
     "lint": "tslint \"src/**/*.ts\""
