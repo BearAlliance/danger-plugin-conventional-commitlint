@@ -70,7 +70,9 @@
   },
   "lint-staged": {
     "*.@(ts|tsx)": [
-      "tslint --fix",
+      "tslint --fix"
+    ],
+    "*.@(ts|tsx|js|jsx|json|md|yml)": [
       "prettier --write"
     ]
   },
