@@ -31,7 +31,8 @@
     "prepublishOnly": "npm run build",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "lint": "tslint \"src/**/*.ts\""
+    "lint": "tslint \"src/**/*.ts\"",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "engines": {
@@ -47,7 +48,7 @@
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.0.2",
     "danger": "*",
-    "husky": "^4.2.5",
+    "husky": "^6.0.0",
     "jest": "^27.1.1",
     "lint-staged": "^10.2.7",
     "prettier": "^2.4.0",
@@ -60,12 +61,6 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
