@@ -48,7 +48,7 @@
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.0.2",
     "danger": "*",
-    "husky": "^6.0.0",
+    "husky": "^7.0.2",
     "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.4.0",
