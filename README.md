@@ -19,19 +19,18 @@ At a glance:
 
 ```js
 // dangerfile.js
-import commitlint from 'danger-plugin-conventional-commitlint'
+import commitlint from 'danger-plugin-conventional-commitlint';
 import configConventional from '@commitlint/config-conventional';
 
 (async function dangerReport() {
-
   const commitlintConfig = {
-    severity: 'warn'
+    severity: 'warn',
   };
   await commitlint(configConventional.rules, commitlintConfig);
 })();
 ```
-> Note: you must provide your own `rules` to the function 
 
+> Note: you must provide your own `rules` to the function
 
 ## API
 
