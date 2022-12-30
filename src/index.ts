@@ -8,6 +8,10 @@ export declare function fail(message: string): void;
 
 export interface CommitlintPluginConfig {
   severity?: 'fail' | 'warn' | 'message' | 'disable';
+  customMessage?: {
+    prefix?: string;
+    suffix?: string;
+  };
 }
 
 interface Rules {
@@ -32,18 +36,26 @@ export default async function commitlint(
   const config = { ...defaultConfig, ...userConfig };
 
   for (const commit of danger.git.commits) {
-    await lintCommitMessage(commit.message, rules, config.severity);
+    await lintCommitMessage(commit.message, rules, config);
   }
 }
 
-async function lintCommitMessage(commitMessage, rules, severity) {
+async function lintCommitMessage(commitMessage, rules, config) {
   return lint(commitMessage, rules).then((report) => {
     if (!report.valid) {
-      let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
+      const messagePrefix =
+        config.customMessage?.prefix ||
+        'There is a problem with the commit message\n>';
+      let failureMessage = `${messagePrefix} ${commitMessage}`;
       report.errors.forEach((error) => {
         failureMessage = `${failureMessage}\n- ${error.message}`;
       });
-      switch (severity) {
+
+      if (config.customMessage?.suffix) {
+        failureMessage = `${failureMessage} ${config.customMessage.suffix}`;
+      }
+
+      switch (config.severity) {
         case 'fail':
           fail(failureMessage);
           break;

@@ -44,6 +44,45 @@ describe('commitlint', () => {
           );
         });
       });
+
+      describe('with default config and custom message prefix and suffix', () => {
+        it('should generate a message with default prefix and custom suffix, and fail', async () => {
+          const customMessage = {
+            suffix:
+              'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>',
+          };
+          await commitlint(rules, { customMessage });
+          expect(global.fail).toHaveBeenCalledTimes(1);
+          expect(global.fail).toHaveBeenCalledWith(
+            `There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty ${customMessage.suffix}`
+          );
+        });
+
+        it('should generate a message with custom prefix and custom suffix, and fail', async () => {
+          const customMessage = {
+            prefix: 'Wrong commit message:',
+            suffix:
+              'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>',
+          };
+          await commitlint(rules, { customMessage });
+          expect(global.fail).toHaveBeenCalledTimes(1);
+          expect(global.fail).toHaveBeenCalledWith(
+            `${customMessage.prefix} foo\n- subject may not be empty\n- type may not be empty ${customMessage.suffix}`
+          );
+        });
+
+        it('should generate a message with custom prefix and no suffix, and fail', async () => {
+          const customMessage = {
+            prefix: 'Wrong commit message:',
+          };
+          await commitlint(rules, { customMessage });
+          expect(global.fail).toHaveBeenCalledTimes(1);
+          expect(global.fail).toHaveBeenCalledWith(
+            `${customMessage.prefix} foo\n- subject may not be empty\n- type may not be empty`
+          );
+        });
+      });
+
       describe('with warn configured', () => {
         it('should generate a message and fail', async () => {
           await commitlint(rules, { severity: 'warn' });
