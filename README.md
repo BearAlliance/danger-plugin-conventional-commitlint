@@ -44,6 +44,12 @@ Type: `String`<br>
 Choices: `'fail' | 'warn' | 'message'`<br>
 danger method to call when the commit message does not pass the linter
 
+#### customMessage
+
+Type: `{ prefix?: string; suffix?: string; }`<br>
+Mandatory: `false`<br>
+functionality to add a prefix or suffix to the outputted message
+
 ## Changelog
 
 See the GitHub [release history](https://github.com/bearalliance/danger-plugin-conventional-commitlint/releases).
