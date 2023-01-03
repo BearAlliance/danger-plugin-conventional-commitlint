@@ -1,5 +1,6 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
 import lint from '@commitlint/lint';
+import { LintRuleOutcome } from '@commitlint/types';
 import { DangerDSLType } from '../node_modules/danger/distribution/dsl/DangerDSL';
 declare const danger: DangerDSLType;
 export declare function message(message: string): void;
@@ -8,10 +9,10 @@ export declare function fail(message: string): void;
 
 export interface CommitlintPluginConfig {
   severity?: 'fail' | 'warn' | 'message' | 'disable';
-  customMessage?: {
-    prefix?: string;
-    suffix?: string;
-  };
+  messageReplacer?: (
+    errors: LintRuleOutcome[],
+    commitMessage: string
+  ) => string;
 }
 
 interface Rules {
@@ -27,7 +28,18 @@ interface Rules {
   'type-enum': Array<string[] | number | string>;
 }
 
-const defaultConfig = { severity: 'fail' };
+const defaultConfig = {
+  severity: 'fail',
+  messageReplacer: (errors, commitMessage) => {
+    let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
+
+    errors.forEach((error) => {
+      failureMessage = `${failureMessage}\n- ${error.message}`;
+    });
+
+    return failureMessage;
+  },
+};
 
 export default async function commitlint(
   rules: Rules,
@@ -43,17 +55,10 @@ export default async function commitlint(
 async function lintCommitMessage(commitMessage, rules, config) {
   return lint(commitMessage, rules).then((report) => {
     if (!report.valid) {
-      const messagePrefix =
-        config.customMessage?.prefix ||
-        'There is a problem with the commit message\n>';
-      let failureMessage = `${messagePrefix} ${commitMessage}`;
-      report.errors.forEach((error) => {
-        failureMessage = `${failureMessage}\n- ${error.message}`;
-      });
-
-      if (config.customMessage?.suffix) {
-        failureMessage = `${failureMessage} ${config.customMessage.suffix}`;
-      }
+      const failureMessage = config.messageReplacer(
+        report.errors,
+        commitMessage
+      );
 
       switch (config.severity) {
         case 'fail':

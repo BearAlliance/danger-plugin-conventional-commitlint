@@ -1,4 +1,5 @@
 import { rules } from '@commitlint/config-conventional';
+import { LintRuleOutcome } from '@commitlint/types';
 import commitlint from './index';
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -45,40 +46,27 @@ describe('commitlint', () => {
         });
       });
 
-      describe('with default config and custom message prefix and suffix', () => {
-        it('should generate a message with default prefix and custom suffix, and fail', async () => {
-          const customMessage = {
-            suffix:
-              'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>',
-          };
-          await commitlint(rules, { customMessage });
-          expect(global.fail).toHaveBeenCalledTimes(1);
-          expect(global.fail).toHaveBeenCalledWith(
-            `There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty ${customMessage.suffix}`
-          );
-        });
+      describe('with custom messageReplacer function', () => {
+        it('should generate a custom message, and fail', async () => {
+          const customMessagePrefix = `This is a beginning of the failure message:`;
+          const customMessageSuffix =
+            'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>';
 
-        it('should generate a message with custom prefix and custom suffix, and fail', async () => {
-          const customMessage = {
-            prefix: 'Wrong commit message:',
-            suffix:
-              'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>',
-          };
-          await commitlint(rules, { customMessage });
-          expect(global.fail).toHaveBeenCalledTimes(1);
-          expect(global.fail).toHaveBeenCalledWith(
-            `${customMessage.prefix} foo\n- subject may not be empty\n- type may not be empty ${customMessage.suffix}`
-          );
-        });
+          const messageReplacer = (
+            errors: LintRuleOutcome[],
+            commitMessage: string
+          ): string => {
+            const errorsDescription = errors
+              .map((error) => `- ${error.message}`)
+              .join('<br>');
 
-        it('should generate a message with custom prefix and no suffix, and fail', async () => {
-          const customMessage = {
-            prefix: 'Wrong commit message:',
+            return `${customMessagePrefix} ${commitMessage}<br>${errorsDescription}<br>${customMessageSuffix}`;
           };
-          await commitlint(rules, { customMessage });
+
+          await commitlint(rules, { messageReplacer });
           expect(global.fail).toHaveBeenCalledTimes(1);
           expect(global.fail).toHaveBeenCalledWith(
-            `${customMessage.prefix} foo\n- subject may not be empty\n- type may not be empty`
+            `${customMessagePrefix} foo<br>- subject may not be empty<br>- type may not be empty<br>${customMessageSuffix}`
           );
         });
       });
