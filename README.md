@@ -52,7 +52,7 @@ Danger method to call when the commit message does not pass the linter
 Type:
 
 ```ts
-(errors: LintRuleOutcome[], commitMessage: string) => string;
+(ruleOutcome: LintOutcome, commitMessage: string) => string;
 ```
 
 Default:
@@ -66,10 +66,10 @@ Example:
 
 ```ts
 const messageReplacer = (
-  errors: LintRuleOutcome[],
+  ruleOutcome: LintOutcome,
   commitMessage: string
 ): string => {
-  const errorsDescription = errors
+  const errorsDescription = ruleOutcome.errors
     .map((error) => `<li>${error.message}</li>`)
     .join('');
 
