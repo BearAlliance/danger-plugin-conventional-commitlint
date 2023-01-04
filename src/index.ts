@@ -1,18 +1,20 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
 import lint from '@commitlint/lint';
-import { LintRuleOutcome } from '@commitlint/types';
+import { LintOutcome } from '@commitlint/types';
 import { DangerDSLType } from '../node_modules/danger/distribution/dsl/DangerDSL';
 declare const danger: DangerDSLType;
 export declare function message(message: string): void;
 export declare function warn(message: string): void;
 export declare function fail(message: string): void;
 
+export interface ReplacerContext {
+  ruleOutcome: LintOutcome;
+  commitMessage: string;
+}
+
 export interface CommitlintPluginConfig {
   severity?: 'fail' | 'warn' | 'message' | 'disable';
-  messageReplacer?: (
-    errors: LintRuleOutcome[],
-    commitMessage: string
-  ) => string;
+  messageReplacer?: (context: ReplacerContext) => string;
 }
 
 interface Rules {
@@ -29,11 +31,11 @@ interface Rules {
 }
 
 const defaultConfig = {
-  severity: 'fail',
-  messageReplacer: (errors, commitMessage) => {
+  severity: 'fail' as const,
+  messageReplacer: ({ ruleOutcome, commitMessage }) => {
     let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
 
-    errors.forEach((error) => {
+    ruleOutcome.errors.forEach((error) => {
       failureMessage = `${failureMessage}\n- ${error.message}`;
     });
 
@@ -52,13 +54,17 @@ export default async function commitlint(
   }
 }
 
-async function lintCommitMessage(commitMessage, rules, config) {
-  return lint(commitMessage, rules).then((report) => {
-    if (!report.valid) {
-      const failureMessage = config.messageReplacer(
-        report.errors,
-        commitMessage
-      );
+async function lintCommitMessage(
+  commitMessage,
+  rules,
+  config: Required<CommitlintPluginConfig>
+) {
+  return lint(commitMessage, rules).then((ruleOutcome) => {
+    if (!ruleOutcome.valid) {
+      const failureMessage = config.messageReplacer({
+        ruleOutcome,
+        commitMessage,
+      });
 
       switch (config.severity) {
         case 'fail':

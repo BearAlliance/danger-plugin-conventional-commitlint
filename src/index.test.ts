@@ -1,5 +1,5 @@
 import { rules } from '@commitlint/config-conventional';
-import { LintRuleOutcome } from '@commitlint/types';
+import type { ReplacerContext } from './index';
 import commitlint from './index';
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -52,11 +52,11 @@ describe('commitlint', () => {
           const customMessageSuffix =
             'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>';
 
-          const messageReplacer = (
-            errors: LintRuleOutcome[],
-            commitMessage: string
-          ): string => {
-            const errorsDescription = errors
+          const messageReplacer = ({
+            ruleOutcome,
+            commitMessage,
+          }: ReplacerContext): string => {
+            const errorsDescription = ruleOutcome.errors
               .map((error) => `- ${error.message}`)
               .join('<br>');
 
