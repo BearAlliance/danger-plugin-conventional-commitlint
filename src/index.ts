@@ -30,17 +30,19 @@ interface Rules {
   'type-enum': Array<string[] | number | string>;
 }
 
+const messageReplacer = ({ ruleOutcome, commitMessage }) => {
+  let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
+
+  ruleOutcome.errors.forEach((error) => {
+    failureMessage = `${failureMessage}\n- ${error.message}`;
+  });
+
+  return failureMessage;
+};
+
 const defaultConfig = {
   severity: 'fail' as const,
-  messageReplacer: ({ ruleOutcome, commitMessage }) => {
-    let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
-
-    ruleOutcome.errors.forEach((error) => {
-      failureMessage = `${failureMessage}\n- ${error.message}`;
-    });
-
-    return failureMessage;
-  },
+  messageReplacer,
 };
 
 export default async function commitlint(
