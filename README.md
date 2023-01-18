@@ -77,8 +77,6 @@ const messageReplacer = (
 };
 ```
 
-<img width="346" alt="Screenshot 2023-01-04 at 07 42 48" src="https://user-images.githubusercontent.com/42243887/210506880-a7510e8c-7d48-4d18-b2f0-95547ecd5882.png">
-
 ## Changelog
 
 See the GitHub [release history](https://github.com/bearalliance/danger-plugin-conventional-commitlint/releases).
