@@ -1,4 +1,5 @@
 import { rules } from '@commitlint/config-conventional';
+import type { ReplacerContext } from './index';
 import commitlint from './index';
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -44,6 +45,32 @@ describe('commitlint', () => {
           );
         });
       });
+
+      describe('with custom messageReplacer function', () => {
+        it('should generate a custom message, and fail', async () => {
+          const customMessagePrefix = `This is a beginning of the failure message:`;
+          const customMessageSuffix =
+            'To learn more about Conventional Commits, visit <a href="https://www.conventionalcommits.org">https://www.conventionalcommits.org/</a>';
+
+          const messageReplacer = ({
+            ruleOutcome,
+            commitMessage,
+          }: ReplacerContext): string => {
+            const errorsDescription = ruleOutcome.errors
+              .map((error) => `- ${error.message}`)
+              .join('<br>');
+
+            return `${customMessagePrefix} ${commitMessage}<br>${errorsDescription}<br>${customMessageSuffix}`;
+          };
+
+          await commitlint(rules, { messageReplacer });
+          expect(global.fail).toHaveBeenCalledTimes(1);
+          expect(global.fail).toHaveBeenCalledWith(
+            `${customMessagePrefix} foo<br>- subject may not be empty<br>- type may not be empty<br>${customMessageSuffix}`
+          );
+        });
+      });
+
       describe('with warn configured', () => {
         it('should generate a message and fail', async () => {
           await commitlint(rules, { severity: 'warn' });

@@ -1,13 +1,20 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
 import lint from '@commitlint/lint';
+import { LintOutcome } from '@commitlint/types';
 import { DangerDSLType } from '../node_modules/danger/distribution/dsl/DangerDSL';
 declare const danger: DangerDSLType;
 export declare function message(message: string): void;
 export declare function warn(message: string): void;
 export declare function fail(message: string): void;
 
+export interface ReplacerContext {
+  ruleOutcome: LintOutcome;
+  commitMessage: string;
+}
+
 export interface CommitlintPluginConfig {
   severity?: 'fail' | 'warn' | 'message' | 'disable';
+  messageReplacer?: (context: ReplacerContext) => string;
 }
 
 interface Rules {
@@ -23,7 +30,20 @@ interface Rules {
   'type-enum': Array<string[] | number | string>;
 }
 
-const defaultConfig = { severity: 'fail' };
+const messageReplacer = ({ ruleOutcome, commitMessage }) => {
+  let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
+
+  ruleOutcome.errors.forEach((error) => {
+    failureMessage = `${failureMessage}\n- ${error.message}`;
+  });
+
+  return failureMessage;
+};
+
+const defaultConfig = {
+  severity: 'fail' as const,
+  messageReplacer,
+};
 
 export default async function commitlint(
   rules: Rules,
@@ -32,18 +52,23 @@ export default async function commitlint(
   const config = { ...defaultConfig, ...userConfig };
 
   for (const commit of danger.git.commits) {
-    await lintCommitMessage(commit.message, rules, config.severity);
+    await lintCommitMessage(commit.message, rules, config);
   }
 }
 
-async function lintCommitMessage(commitMessage, rules, severity) {
-  return lint(commitMessage, rules).then((report) => {
-    if (!report.valid) {
-      let failureMessage = `There is a problem with the commit message\n> ${commitMessage}`;
-      report.errors.forEach((error) => {
-        failureMessage = `${failureMessage}\n- ${error.message}`;
+async function lintCommitMessage(
+  commitMessage,
+  rules,
+  config: Required<CommitlintPluginConfig>
+) {
+  return lint(commitMessage, rules).then((ruleOutcome) => {
+    if (!ruleOutcome.valid) {
+      const failureMessage = config.messageReplacer({
+        ruleOutcome,
+        commitMessage,
       });
-      switch (severity) {
+
+      switch (config.severity) {
         case 'fail':
           fail(failureMessage);
           break;
