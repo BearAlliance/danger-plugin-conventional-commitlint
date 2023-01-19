@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=10.18.0"
+    "node": ">=16"
   },
   "files": [
     "dist/"
