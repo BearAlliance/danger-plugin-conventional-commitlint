@@ -24,6 +24,84 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+  release-preview:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - name: Semantic Release dry-run (preview)
+        id: preview
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Base ref: ${{ github.base_ref }}"
+          echo "Head ref: ${{ github.head_ref }}"
+          BRANCHES="${{ github.base_ref }}"
+          echo "Using branches: $BRANCHES"
+
+          echo "Spoofing CI env to pretend we run on base branch ($BRANCHES)"
+          export GITHUB_REF="refs/heads/${{ github.base_ref }}"
+          export GITHUB_REF_NAME="${{ github.base_ref }}"
+          export GITHUB_EVENT_NAME="push"
+          unset GITHUB_HEAD_REF || true
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+
+          echo "Preparing local branch to track remote and be up-to-date..."
+          git fetch --prune origin
+          # Create/reset a local branch with the base branch name at the current HEAD (PR merge commit)
+          git checkout -B "${{ github.base_ref }}"
+          # Track the remote base branch (no push; local only)
+          git branch --set-upstream-to "origin/${{ github.base_ref }}" "${{ github.base_ref }}" || true
+          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Branches:"
+          git branch -vv || true
+
+          npx semantic-release --dry-run --no-ci --branches "$BRANCHES" | tee sr.log
+          NEXT_VERSION=$(grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' sr.log || true)
+          echo "version=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Next version: ${NEXT_VERSION}"
+          echo "### Release preview (pretending base branch: ${BRANCHES})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -n "$NEXT_VERSION" ]; then
+            echo "Next version: \`${NEXT_VERSION}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No release will be generated from these changes." >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Full semantic-release dry-run output:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          sed -n '1,200p' sr.log >> $GITHUB_STEP_SUMMARY
+      - name: Find existing release preview comment
+        if: ${{ github.event.pull_request.base.ref == 'main' && steps.preview.outputs.version != '' }}
+        id: fc
+        uses: peter-evans/find-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '[release-preview]'
+      - name: Create or update PR comment with next version
+        if: ${{ github.event.pull_request.base.ref == 'main' && steps.preview.outputs.version != '' }}
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            [release-preview]
+            A release would be created if this PR is merged into `main`.
+
+            Next version: `${{ steps.preview.outputs.version }}`
+
   release:
     name: Release
     needs: build
