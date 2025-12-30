@@ -67,7 +67,7 @@ Example:
 ```ts
 const messageReplacer = (
   ruleOutcome: LintOutcome,
-  commitMessage: string
+  commitMessage: string,
 ): string => {
   const errorsDescription = ruleOutcome.errors
     .map((error) => `<li>${error.message}</li>`)
