@@ -40,7 +40,7 @@ const defaultConfig = {
 
 export default async function commitlint(
   rules: QualifiedRules,
-  userConfig?: CommitlintPluginConfig
+  userConfig?: CommitlintPluginConfig,
 ): Promise<void> {
   const config = { ...defaultConfig, ...userConfig };
 
@@ -52,7 +52,7 @@ export default async function commitlint(
 async function lintCommitMessage(
   commitMessage: string,
   rules: QualifiedRules,
-  config: Required<CommitlintPluginConfig>
+  config: Required<CommitlintPluginConfig>,
 ) {
   const ruleOutcome: LintOutcome = await lint(commitMessage, rules);
   if (!ruleOutcome.valid) {
