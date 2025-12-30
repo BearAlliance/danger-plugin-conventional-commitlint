@@ -1,4 +1,4 @@
-import { rules } from '@commitlint/config-conventional';
+import configConventional from '@commitlint/config-conventional';
 import type { ReplacerContext } from './index';
 import commitlint from './index';
 
@@ -27,7 +27,7 @@ describe('commitlint', () => {
         global.danger = { git: { commits: [{ message: 'chore: foo' }] } };
       });
       it('should do nothing', async () => {
-        await commitlint(rules);
+        await commitlint(configConventional.rules);
         expect(global.fail).toHaveBeenCalledTimes(0);
       });
     });
@@ -38,10 +38,10 @@ describe('commitlint', () => {
       });
       describe('with default config', () => {
         it('should generate a message and fail', async () => {
-          await commitlint(rules);
+          await commitlint(configConventional.rules);
           expect(global.fail).toHaveBeenCalledTimes(1);
           expect(global.fail).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty',
           );
         });
       });
@@ -63,21 +63,21 @@ describe('commitlint', () => {
             return `${customMessagePrefix} ${commitMessage}<br>${errorsDescription}<br>${customMessageSuffix}`;
           };
 
-          await commitlint(rules, { messageReplacer });
+          await commitlint(configConventional.rules, { messageReplacer });
           expect(global.fail).toHaveBeenCalledTimes(1);
           expect(global.fail).toHaveBeenCalledWith(
-            `${customMessagePrefix} foo<br>- subject may not be empty<br>- type may not be empty<br>${customMessageSuffix}`
+            `${customMessagePrefix} foo<br>- subject may not be empty<br>- type may not be empty<br>${customMessageSuffix}`,
           );
         });
       });
 
       describe('with warn configured', () => {
         it('should generate a message and fail', async () => {
-          await commitlint(rules, { severity: 'warn' });
+          await commitlint(configConventional.rules, { severity: 'warn' });
           expect(global.fail).toHaveBeenCalledTimes(0);
           expect(global.warn).toHaveBeenCalledTimes(1);
           expect(global.warn).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty',
           );
         });
       });
@@ -94,7 +94,7 @@ describe('commitlint', () => {
         };
       });
       it('should do nothing', async () => {
-        await commitlint(rules);
+        await commitlint(configConventional.rules);
         expect(global.fail).toHaveBeenCalledTimes(0);
       });
     });
@@ -108,13 +108,13 @@ describe('commitlint', () => {
 
       describe('with default config', () => {
         it('should generate a message and fail', async () => {
-          await commitlint(rules);
+          await commitlint(configConventional.rules);
           expect(global.fail).toHaveBeenCalledTimes(2);
           expect(global.fail).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty'
+            'There is a problem with the commit message\n> foo\n- subject may not be empty\n- type may not be empty',
           );
           expect(global.fail).toHaveBeenCalledWith(
-            'There is a problem with the commit message\n> bar\n- subject may not be empty\n- type may not be empty'
+            'There is a problem with the commit message\n> bar\n- subject may not be empty\n- type may not be empty',
           );
         });
       });
