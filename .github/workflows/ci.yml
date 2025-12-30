@@ -5,15 +5,12 @@ on:
       - main
       - beta
   pull_request:
-    branches:
-      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -23,28 +20,3 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
-  release:
-    name: Release
-    needs: build
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-      - name: Install dependencies
-        run: npm ci
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
