@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -57,7 +57,7 @@
     "babel-jest": "^30.2.0",
     "commitizen": "4.3",
     "cz-conventional-changelog": "3.3",
-    "danger": "*",
+    "danger": "^13.0.10",
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
@@ -98,6 +98,10 @@
     ]
   },
   "dependencies": {
-    "@commitlint/lint": "^20.2.0"
+    "@commitlint/lint": "20.2.0",
+    "@commitlint/parse": "20.2.0"
+  },
+  "peerDependencies": {
+    "danger": "^13.0.10"
   }
 }

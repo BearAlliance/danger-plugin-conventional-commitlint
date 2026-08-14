@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "rootDir": "src",
     "outDir": "dist",
     "allowJs": false,
     "pretty": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
     "strictNullChecks": true,
     "declaration": true,
     "noImplicitAny": true
