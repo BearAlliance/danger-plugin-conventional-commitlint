@@ -6,6 +6,7 @@
     "outDir": "dist",
     "allowJs": false,
     "pretty": true,
+    "skipLibCheck": true,
     "strictNullChecks": true,
     "declaration": true,
     "noImplicitAny": true

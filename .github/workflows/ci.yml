@@ -33,6 +33,7 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Install Dependencies
         run: npm ci
-      - uses: danger/danger-js@13.0.5
+      - name: Run Danger
+        run: npx --no-install danger ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
