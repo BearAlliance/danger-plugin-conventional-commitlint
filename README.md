@@ -7,6 +7,10 @@
 
 A [danger](https://github.com/danger/danger-js) plugin to lint commit messages with [commitlint](https://github.com/conventional-changelog/commitlint)
 
+## Requirements
+
+This plugin supports Node.js 22 or later and requires [danger](https://github.com/danger/danger-js) 13.x as its host runtime.
+
 ## Usage
 
 Install:

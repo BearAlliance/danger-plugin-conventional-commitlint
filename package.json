@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -100,5 +100,8 @@
   "dependencies": {
     "@commitlint/lint": "20.2.0",
     "@commitlint/parse": "20.2.0"
+  },
+  "peerDependencies": {
+    "danger": "^13.0.10"
   }
 }
